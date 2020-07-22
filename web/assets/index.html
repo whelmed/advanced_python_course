@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html>
+
+<head>
+    <title>Entity Extractions by Publication</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script type="text/javascript">
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var elem = document.querySelector('.sidenav');
+            var instance = M.Sidenav.init(elem, { edge: 'right', preventScrolling: false });
+            var previewBtns = document.querySelectorAll('.preview-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    instance.open();
+                });
+            });
+        });
+    </script>
+
+</head>
+
+<body>
+    <!-- Navbar goes here -->
+    <nav>
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Cloud Academy</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li><a href="comparison.html">Side-by-side Comparison</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Layout here -->
+    <div class="row">
+
+        <div class="col s9 details">
+            <div class="row">
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vice News</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vice News
+                                <br>
+                                Most common entities across 57324 articles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vox</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vox
+                                <br>
+                                Most common entities across 10331 articles.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vice News</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vice News
+                                <br>
+                                Most common entities across 57324 articles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vox</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vox
+                                <br>
+                                Most common entities across 10331 articles.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vice News</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vice News
+                                <br>
+                                Most common entities across 57324 articles.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="images/sample-1.jpg">
+                            <span class="card-title">Vox</span>
+                            <a class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
+                                    class="material-icons">preview</i></a>
+                        </div>
+                        <div class="card-content">
+                            <p>
+                                Publication: Vox
+                                <br>
+                                Most common entities across 10331 articles.
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+
+
+        <div class="col s3"></div>
+    </div>
+
+
+    <div id="slide-out" class="sidenav">
+
+        <ul class="collection with-header">
+            <li class="collection-header">
+                <h4>Entities for Publication</h4>
+            </li>
+            <li class="collection-item">
+                <div>United States<a href="#!" class="secondary-content"><span class="badge">98765</span></a></div>
+            </li>
+            <li class="collection-item">
+                <div>Members of Congress<a href="#!" class="secondary-content"><span class="badge">54234</span></a>
+                </div>
+            </li>
+            <li class="collection-item">
+                <div>Something else<a href="#!" class="secondary-content"><span class="badge">14532</span></a></div>
+            </li>
+            <li class="collection-item">
+                <div>The coolest thing<a href="#!" class="secondary-content"><span class="badge">13443</span></a>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="pagination">
+            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+
+            <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
