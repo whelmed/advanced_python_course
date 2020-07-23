@@ -28,10 +28,17 @@ setup(
         "typer==0.3.0",
         "httpx==0.13.3",
         "supervisor==4.2.0",
-        "schedule==0.6.0",
     ],
-    extras_require={"dev": [
-        "pytest==5.4.3",
-    ]}
+    extras_require={
+        "dev": [
+            "pytest==5.4.3",
+        ],
+        "web": [
+            "wordcloud==1.7.0",
+            "falcon",
+            "falcon==2.0.0",
+            "google-cloud-storage==1.29.0",
+        ]
+    }
 
 )
