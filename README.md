@@ -8,7 +8,9 @@ This source code is used as a part of the Cloud Academy Advanced Python developm
 The code is broken into multiple modules. 
 
 /ingest is responsible for data ingestion, processing, and persistence.
+
 /simultator is responsible for sending data to the ingestion front-end.
+
 /web is responsible for serving up a web user interface.
 
 ## Software Used
