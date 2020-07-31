@@ -14,6 +14,18 @@ class Connector:
     '''Connector is used to manage the connection to the input Queue.
     The queue manager requires a call to .connect() to establish a connection.
     By reusing connections we can better manage our networking resources.
+
+    This code is ugly and I don't want to maintain it. However, I couldn't 
+    find a simple way to check to see if the connection is established or not.
+
+    I'd like to be able to do something like: 
+
+    if self.manager.closed:
+        self.manager.connect()
+
+    however, I didn't see a public property or method that made this possible. 
+    For now, this will have to do. However, remove as soon as a simple way to
+    solve this is found.
     '''
 
     def __init__(self):
