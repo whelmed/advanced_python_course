@@ -1,7 +1,10 @@
-import contextlib
-import os
-from collections import namedtuple
-from multiprocessing import Event, Queue, Value
+###############################################################################
+'''
+    This module provides us with a drainable multiprocess aware message queue.
+
+'''
+###############################################################################
+from multiprocessing import Event, Queue
 from multiprocessing.managers import BaseManager
 from queue import Empty
 from typing import Any, List
@@ -51,17 +54,17 @@ class QueueWrapper(object):
         log.debug(f'preventing writes to the {self.name} queue')
         self._prevent_writes.set()
 
-    @ property
+    @property
     def is_writable(self):
         '''Read-only property indicating if the queue is writable. '''
         return not self._prevent_writes.is_set()
 
-    @ property
+    @property
     def is_drained(self):
         '''If the queue is not writable and is empty the queue is draining '''
         return not self.is_writable and self.empty
 
-    @ property
+    @property
     def empty(self):
         '''Read-only property indicating if the queue is empty '''
         return self.q.empty()

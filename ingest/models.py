@@ -1,3 +1,10 @@
+
+###############################################################################
+'''
+    This module provides models used as messages to be passed via messageq.
+
+'''
+###############################################################################
 from collections import Counter
 from typing import Any, Dict, List, Tuple
 
@@ -5,13 +12,17 @@ from pydantic import BaseModel
 
 
 class Post(BaseModel):
-    content: str
-    publication: str
+    '''Post is used to store content and publication from the front-end.
+    '''
+    content: str  # Required
+    publication: str  # Required
 
 
 class ProcessedPost(BaseModel):
-    publication: str = None
-    entities: Counter = Counter()
+     '''ProcessedPost is to store the results of the DataProcessor.
+    '''
+    publication: str = None # Not-required on creation.
+    entities: Counter = Counter() 
     article_count: int = 0
 
     @property

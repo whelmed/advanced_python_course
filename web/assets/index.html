@@ -27,26 +27,32 @@
                 data() {
                     return {
                         publication: '',
-                        wordcounts: []
+                        pageSize: 10,
+                        wordcounts: [],
+                        currentIndex: 0,
+                        page: []
                     }
                 },
                 methods: {
                     open: function (publ) {
                         this.publication = publ;
 
-                        fetch(`http://localhost:8000/words?pubs=${publ}`)
+                        fetch(`http://localhost:8000/freq/${publ}`)
                             .then(resp => resp.json())
-                            .then(json => this.wordcounts = json[publ])
+                            .then(json => this.wordcounts = this.page = json)
                             .catch(err => console.log(err));
 
                         window.sideBarInstance.open();
                     },
                     getNext: function () {
-                        let last = this.wordcounts[this.wordcounts.length - 1]
-                        fetch(`http://localhost:8000/words?pubs=${this.publication}&word=${last.word}&count=${last.count}`)
+                        let last = this.wordcounts[this.wordcounts.length - 1];
+                        fetch(`http://localhost:8000/freq/${this.publication}?word=${last.word}&count=${last.count}`)
                             .then(resp => resp.json())
-                            .then(json => this.wordcounts = json[publ])
+                            .then(json => this.wordcounts = this.wordcounts.concat(json))
                             .catch(err => console.log(err));
+                    },
+                    getPrevious: function () {
+                        this.currentIndex--;
                     }
                 }
             })
@@ -103,14 +109,14 @@
                 <div v-for="pub in pubs" class="col s6">
                     <div class="card">
                         <div class="card-image">
-                            <img v-bind:src="pub.img">
-                            <a @click="openSidebar(pub.pub)"
+                            <img v-bind:src="pub.img_uri">
+                            <a @click="openSidebar(pub.name)"
                                 class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
                                     class="material-icons">preview</i></a>
                         </div>
                         <div class="card-content">
                             <p>
-                                Publication: {{pub.pub}}
+                                Publication: {{pub.name}}
                                 <br>
                                 Articles: {{pub.count}}
                             </p>
@@ -136,15 +142,13 @@
             <li class="collection-header">
                 <h4>{{publication}}</h4>
             </li>
-            <li @click="getPrevious(publication)" class="waves-effect"><a href="#!"><i
-                        class="material-icons">chevron_left</i></a>
+            <li @click="getPrevious()" class="waves-effect"><a href="#!"><i class="material-icons">chevron_left</i></a>
             </li>
 
-            <li @click="getNext(publication)" class="waves-effect"><a href="#!"><i
-                        class="material-icons">chevron_right</i></a>
+            <li @click="getNext()" class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a>
             </li>
-            <li class="collection-item" v-for="(count, word) in wordcounts">
-                <div>{{word}}<a href="#!" class="secondary-content">{{count}}</a></div>
+            <li class="collection-item" v-for="item in wordcounts.slice(-10)">
+                <div>{{item.word}}<a href="#!" class="secondary-content">{{item.count}}</a></div>
             </li>
         </ul>
 

@@ -1,16 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="ingest",
+    name="ingestion",
     version="0.0.1",
     author="Ben Lambert",
-    author_email="supprt@cloudacademy.com",
+    author_email="support@cloudacademy.com",
     description="A demo application created to accompany a Python course.",
     keywords="learn python cloud academy",
     url="http://cloudacademy.com",
     packages=find_packages(),
     entry_points={"console_scripts": [
-        "ingestd=ingest.backend:main",
+        "ingestiond=ingest.backend:main",
         "getdataset=simulator.download:download_and_extract",
         "uploaddataset=simulator.upload:main",
     ]},
@@ -23,7 +23,7 @@ setup(
         "passlib==1.7.2",
         "bcrypt==3.1.7",
         "PyJWT==1.7.1",
-        "spacy==2.3.0",
+        "spacy==2.3.2",
         "spacy-lookups-data==0.3.2",
         "typer==0.3.0",
         "httpx==0.13.3",

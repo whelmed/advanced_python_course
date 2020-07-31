@@ -1,3 +1,13 @@
+###############################################################################
+'''
+    This module enables us to process text using natural language processing
+    to extract known entities - i.e. nouns (person, place, thing,)
+
+    It uses Spacy to extract entites based on a pre-built model.
+    The model must be downloaded before using spacy. 
+
+'''
+###############################################################################
 from collections import Counter
 from typing import Dict
 

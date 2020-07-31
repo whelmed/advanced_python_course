@@ -58,6 +58,6 @@ def check_auth_header(api_key_header: str = Security(API_KEY_HEADER)):
 @app.post("/post/enqueue", status_code=status.HTTP_201_CREATED)
 def create_post(post: Post, queue: QueueWrapper = Depends(iqueue), authenticated: bool = Depends(check_auth_header)):
     try:
-        queue.put(post.dict())
+        queue.put(post)
     except Exception as ex:
         raise HTTPException(status_code=500)

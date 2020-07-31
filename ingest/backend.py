@@ -1,8 +1,23 @@
-import asyncio
-import concurrent.futures
+
+###############################################################################
+'''
+    This module handles the creation of worker and saver processes.
+    Worker processes get items from a message queue and process them with a
+    DataProcessor(). The processed data is put on a different message queue 
+    which is consumed by the saver.
+
+    Saver processes get items from a message queue and saves it to Firestore.
+
+    INPUT QUEUE           Workers      OUTPUT QUEUE
+    [................] -> Worker() --> [................] -> Saver() --> Firestore
+                      |_> Worker() _|                    |_> Saver() _|
+                      |_> Worker() _|                    |_> Saver() _|
+                      |_> Worker() _|
+
+'''
+###############################################################################
 import os
 import signal
-import time
 from collections import defaultdict
 from multiprocessing import Process
 from typing import Dict, List, Tuple
