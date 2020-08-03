@@ -38,7 +38,9 @@ The purpose of this application is to help us identify the most common topics me
 The way we'll accomplish this is to use natural language processing to perform entity extraction. 
 ...
 
-## Lesson Plan
+## A Rough Lesson Plan
+
+Exact plan may change.
 
 * Sprint Planning 00: [5min] Introduction
 
@@ -67,7 +69,7 @@ The way we'll accomplish this is to use natural language processing to perform e
             * Use pytests to validate the functionality
         * Create Persistence Function Stubs
 
-* Sprint 05: [30min] Create Backend Process Manager, Configure Setup.py, Complete DB Persistence
+* Sprint 05: [2 x 15min] Create Backend Process Manager, Configure Setup.py, Complete DB Persistence
     * In this lesson we'll:
         * Create a Worker process to handle input
         * Create a Saver process to handle database persistence
