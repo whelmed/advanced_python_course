@@ -19,11 +19,11 @@ class QueueWrapper(object):
         self.q: Queue = q or Queue()
         self._prevent_writes: Event = prevent_writes or Event()
 
-    def connect(self):
-        '''Connect to multiprocessing.Queue
-        Used by clients attempting to connect to the Queue via a proxy.
-        '''
-        self.q.connect()
+    # def connect(self):
+    #     '''Connect to multiprocessing.Queue
+    #     Used by clients attempting to connect to the Queue via a proxy.
+    #     '''
+    #     self.q.connect()
 
     def get(self) -> Any:
         '''This call blocks until a it gets a message from the queue.

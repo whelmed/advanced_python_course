@@ -39,7 +39,6 @@ class Worker(Process):
         self.iq: QueueWrapper = inq
         self.oq: QueueWrapper = outq
         self._cache_size: int = cache_size
-        self._count: int = 0
         self.reset_cache()
         super(Worker, self).__init__()
 
@@ -57,6 +56,7 @@ class Worker(Process):
 
     def reset_cache(self):
         self._cache = defaultdict(ProcessedPost)
+        self._count = 0
 
     def cache(self, msg: ProcessedPost) -> int:
         '''Caches messages until flush_cache is called.

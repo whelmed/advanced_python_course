@@ -19,10 +19,10 @@ class Post(BaseModel):
 
 
 class ProcessedPost(BaseModel):
-     '''ProcessedPost is to store the results of the DataProcessor.
+    '''ProcessedPost is to store the results of the DataProcessor.
     '''
-    publication: str = None # Not-required on creation.
-    entities: Counter = Counter() 
+    publication: str = None  # Not-required on creation.
+    entities: Counter = Counter()
     article_count: int = 0
 
     @property
