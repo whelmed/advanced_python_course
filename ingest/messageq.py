@@ -19,12 +19,6 @@ class QueueWrapper(object):
         self.q: Queue = q or Queue()
         self._prevent_writes: Event = prevent_writes or Event()
 
-    # def connect(self):
-    #     '''Connect to multiprocessing.Queue
-    #     Used by clients attempting to connect to the Queue via a proxy.
-    #     '''
-    #     self.q.connect()
-
     def get(self) -> Any:
         '''This call blocks until a it gets a message from the queue.
         If the queue is drained, it returns the sentinal string STOP.
@@ -68,9 +62,6 @@ class QueueWrapper(object):
     def empty(self):
         '''Read-only property indicating if the queue is empty '''
         return self.q.empty()
-
-    def close(self):
-        self.q.close()
 
 
 class QueueManager(BaseManager):

@@ -104,7 +104,7 @@ Exact plan may change.
         * Review processes with htop / strace
         * Identify a bug
 
-* Sprint 08: [10min] Resolve Shutdown Bug
+* Sprint 09: [10min] Resolve Shutdown Bug
     * In this lesson we'll:
         * Resolve the bug 
         * Summarize what we've covered
