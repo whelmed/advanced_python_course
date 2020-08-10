@@ -114,7 +114,6 @@ class BlobStorage():
         self.blob = client
 
     def save(self, publ: str, bucket: str, ibytes: bytes):
-        # hash to cap the len, base64 to make URL friendly
         publ = pub_to_url(publ)
         b = self.blob.get_bucket(bucket)
         Blob(f'{publ}.png', b).upload_from_string(ibytes, content_type='image/png')  # noqa
