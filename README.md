@@ -44,24 +44,24 @@ Exact plan may change.
 
 * Sprint Planning 00: [5min] Introduction
 
-* Sprint 01: [5min] Local Development Setup 
+* Sprint 01: Local Development Setup 
     * In this lesson we'll:
         * Start a Linux VM using Vagrant
         * Compile and install Python 3.8
         * Setup a virtual environment
 
-* Sprint 02: [6min] Create a Text Processor
+* Sprint 02: Implementing the Text Processor
     * In this lesson we'll:
         * Create a centralized multiprocess logger
         * Install Spacy
         * Create an entity extraction process for text 
 
-* Sprint 03: [8min] Create Message Queue with unit tests
+* Sprint 03: Implement and Test the Message Queue 
     * In this lesson we'll:
         * Create a multiprocess aware, drainable queue
         * Use pytests to validate the functionality
 
-* Sprint 04: [8min] Create Data Models, Create Shutdown Manager with unit tests, Stub Persistence Functions
+* Sprint 04: Implement Data Models and Shutdown Manager
     * In this lesson we'll:
         * Install Pydantic
         * Create Models
@@ -69,7 +69,7 @@ Exact plan may change.
             * Use pytests to validate the functionality
         * Create Persistence Function Stubs
 
-* Sprint 05: [2 x 15min] Create Backend Process Manager, Configure Setup.py, Complete DB Persistence
+* Sprint 05: Create Backend Process Manager, Configure Setup.py, Complete DB Persistence
     * In this lesson we'll:
         * Create a Worker process to handle input
         * Create a Saver process to handle database persistence
@@ -78,13 +78,13 @@ Exact plan may change.
         * Perform bug fixes
         * Complete DB Persistence
 
-* Sprint 06: [11min] Create a Web Frontend for Ingesting Posts
+* Sprint 06: Create a Web Frontend for Ingesting Posts
     * In this lesson we'll:
         * Install FastAPI, Uvicorn, GUnicorn
         * Create an  HTTP endpoint to enqueue a Post(content: str, publication: str)
         * Implement a header-based API Key
 
-* Sprint 07: [13min] Deploy App to Cloud VM
+* Sprint 07: Deploy App to Cloud VM
     * In this lesson we'll:
         * Install Supervisor
         * Review the configuration file
@@ -94,7 +94,7 @@ Exact plan may change.
         * Deploy
         * Verify Deployment
 
-* Sprint 08: [14min] Exercising Deployed App
+* Sprint 08: Exercising Deployed App
     * In this lesson we'll:
         * Review script for downloading a dataset
         * Review script for uploading Posts from dataset to Frontend
@@ -104,7 +104,7 @@ Exact plan may change.
         * Review processes with htop / strace
         * Identify a bug
 
-* Sprint 09: [10min] Resolve Shutdown Bug
+* Sprint 09: Post Morteum 
     * In this lesson we'll:
         * Resolve the bug 
         * Summarize what we've covered

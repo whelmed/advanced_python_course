@@ -1,3 +1,4 @@
+import os
 import pytest
 from unittest.mock import Mock, patch
 from PIL import Image
@@ -5,7 +6,8 @@ from google.cloud import firestore
 from google.cloud.storage import Blob
 from google.cloud import storage
 from wordcloud.wordcloud import WordCloud
-from .data import get_client, image_to_byte_array, DataStorage, generate_word_cloud
+from .data import (get_client, image_to_byte_array, DataStorage,
+                   NoOpDataStorage, generate_word_cloud, pub_to_url)
 
 black_square = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x80\x00\x00\x00\x80\x08\x02\x00\x00\x00L\\\xf6\x9c\x00\x00\x00DIDATx\x9c\xed\xc1\x01\x01\x00\x00\x00\x80\x90\xfe\xaf\xee\x08\n\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18\xc0\x80\x00\x01c\x16u\x00\x00\x00\x00\x00IEND\xaeB`\x82'
 
@@ -57,11 +59,15 @@ class Client:
             return Client.collections[self._collection]
 
 
-@pytest.fixture
-def data_storage():
-    return DataStorage(client=Client())
+@pytest.fixture(scope="function", params=[DataStorage, NoOpDataStorage])
+def data_storage(request):
+    ''' Creates DataStorage & NoOpDataStorage for fixture callers.
+        Enables testing of both classes with a mock client.
+    '''
+    return request.param(client=Client())
 
 
+@pytest.mark.skipif(os.path.exists('/vagrant/Vagrantfile'), reason='run in prod-like environments only')
 @pytest.mark.parametrize('_in,_out', [
     (None, firestore.Client),
     ('db', firestore.Client),
@@ -80,14 +86,14 @@ def test_publications(data_storage):
     for index, publication in enumerate(data_storage.publications()):
         assert publication.count == index
         assert publication.name == f'pub{index}'
-        assert publication.img_uri == f'/images/{publication.name}.png'
+        assert publication.img_uri == f'/{pub_to_url(publication.name)}.png'
 
 
 def test_publications_diff_img_dir(data_storage):
     for index, publication in enumerate(data_storage.publications('/reimagined/')):
         assert publication.count == index
         assert publication.name == f'pub{index}'
-        assert publication.img_uri == f'/reimagined/{publication.name}.png'
+        assert publication.img_uri == f'/reimagined/{pub_to_url(publication.name)}.png'
 
 
 def test_word_counts(data_storage):

@@ -16,6 +16,14 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script type="text/javascript">
 
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.hostname === "0.0.0.0") {
+            // Dev env? Use the local API running on 8080
+            var apiBaseURL = 'http://127.0.0.1:8080';
+        } else {
+            // Non local env? Set the value here
+            var apiBaseURL = 'http://IPHERE:8080';
+        }
+
 
         document.addEventListener('DOMContentLoaded', function () {
 
@@ -27,7 +35,6 @@
                 data() {
                     return {
                         publication: '',
-                        pageSize: 10,
                         wordcounts: [],
                         currentIndex: 0,
                         page: []
@@ -37,7 +44,7 @@
                     open: function (publ) {
                         this.publication = publ;
 
-                        fetch(`http://localhost:8000/freq/${publ}`)
+                        fetch(`${apiBaseURL}/frequencies/${publ}`)
                             .then(resp => resp.json())
                             .then(json => this.wordcounts = this.page = json)
                             .catch(err => console.log(err));
@@ -46,7 +53,7 @@
                     },
                     getNext: function () {
                         let last = this.wordcounts[this.wordcounts.length - 1];
-                        fetch(`http://localhost:8000/freq/${this.publication}?word=${last.word}&count=${last.count}`)
+                        fetch(`${apiBaseURL}/frequencies/${this.publication}?word=${last.word}&count=${last.count}`)
                             .then(resp => resp.json())
                             .then(json => this.wordcounts = this.wordcounts.concat(json))
                             .catch(err => console.log(err));
@@ -65,7 +72,7 @@
                     }
                 },
                 mounted() {
-                    fetch('http://localhost:8000/pubs')
+                    fetch(`${apiBaseURL}/publications`)
                         .then(resp => resp.json())
                         .then(json => this.pubs = json)
                         .catch(err => console.log(err));
@@ -94,9 +101,6 @@
     <nav>
         <div class="nav-wrapper">
             <a href="#" class="brand-logo">Cloud Academy</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li><a href="comparison.html">Side-by-side Comparison</a></li>
-            </ul>
         </div>
     </nav>
 
@@ -109,10 +113,11 @@
                 <div v-for="pub in pubs" class="col s6">
                     <div class="card">
                         <div class="card-image">
-                            <img v-bind:src="pub.img_uri">
+                            <img v-bind:src=`https://storage.googleapis.com${pub.img_uri}`>
                             <a @click="openSidebar(pub.name)"
                                 class="preview-btn btn-floating halfway-fab waves-effect waves-light red"><i
                                     class="material-icons">preview</i></a>
+
                         </div>
                         <div class="card-content">
                             <p>

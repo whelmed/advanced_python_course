@@ -14,8 +14,6 @@ from wordcloud import WordCloud
 
 from .models import Publication, WordCount
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/vagrant/service_account.json'
-
 
 def get_client(_type='db'):
     if _type == 'db':
@@ -52,15 +50,21 @@ def generate_word_cloud(freqs, fmt: str = 'bytes', height: int = 500, width: int
         raise ValueError('unsupported fmt value.')
 
 
+def pub_to_url(publ: str):
+    '''convert the name of a publication to a URL friendly hash'''
+    return hashlib.md5(publ.encode()).hexdigest()
+
+
 class DataStorage():
+    name = 'data-firestore'
 
     def __init__(self, client: firestore.Client = None):
         self.db = client
 
-    def publications(self, base_img_uri: str = '/images/') -> Generator[Publication, None, None]:
+    def publications(self, bucket_name: str = '/') -> Generator[Publication, None, None]:
         '''Yields a `Publication` for each publication in the dataset.'''
         for doc in self.db.collection('publications').stream():
-            yield Publication(doc.id, doc.get('count'), f'{base_img_uri}{quote(doc.id)}.png')
+            yield Publication(doc.id, doc.get('count'), f'{bucket_name}{pub_to_url(doc.id)}.png')
 
     def word_counts(self, publ: str, top_n: int = 10, checkpoint: Dict[str, Any] = None) -> Generator[WordCount, None, None]:
         '''Yields up to top_n WordCounts for the given publication.
@@ -88,27 +92,34 @@ class DataStorage():
 
 
 class NoOpDataStorage():
+    name = 'data-noop'
 
     def __init__(self, *args, **kwargs):
         pass
 
-    def publications(self, base_img_uri='/images/', *_, **__) -> Generator[Publication, None, None]:
+    def publications(self, bucket_name='/', *_, **__) -> Generator[Publication, None, None]:
         for i in range(10):
-            yield Publication(f'pub{i}', i, f'{base_img_uri}pub{i}.png')
+            pub = f'pub{i}'
+            yield Publication(pub, i, f'{bucket_name}{pub_to_url(pub)}.png')
 
-    def word_counts(self, *_, **__) -> Generator[WordCount, None, None]:
-        for i in range(10):
+    def word_counts(self, *_, checkpoint: Dict[str, Any] = None, **__) -> Generator[WordCount, None, None]:
+        # If a checkpoint is passed, use the count to determine
+        # where the range generator starts
+        # Allows us to simulate setting a checkpoint
+        if checkpoint:
+            checkpoint = checkpoint.get('count', -1) + 1
+        else:
+            checkpoint = 0
+
+        for i in range(checkpoint, 10):
             yield WordCount(f'ent{i}', i)
 
     def frequencies(self, *_, **__) -> Dict[str, int]:
         return {wc.word: wc.count for wc in self.word_counts()}
 
 
-def pub_to_url(publ: str):
-    return hashlib.md5(publ.encode()).hexdigest()
-
-
 class BlobStorage():
+    name = 'blob-gc-storage'
 
     def __init__(self, client: storage.Client):
         self.blob = client
@@ -120,6 +131,7 @@ class BlobStorage():
 
 
 class NoOpBlobStorage():
+    name = 'blob-noop'
 
     def __init__(self, *args, **kwargs):
         pass
