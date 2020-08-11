@@ -103,9 +103,12 @@ def test_word_counts(data_storage):
 
 
 def test_word_counts_checkpoint(data_storage):
-    chk = Client.collections['ent'][1]
+    entity_index = 1
+    ent = Client.collections['ent'][entity_index]
+    chk = (ent['word'], ent['count'])
     for index, (word, count) in enumerate(data_storage.word_counts('pub0', checkpoint=chk)):
-        index = index + 2  # Adjust the index to sync up with the checkpoint
+        # Set the index to the entity_index + 1 to get the next record
+        index += (entity_index+1)
         assert word == f'ent{index}'
         assert count == index
 

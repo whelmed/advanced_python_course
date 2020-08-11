@@ -31,15 +31,14 @@ from collections import Counter, defaultdict
 import os
 import logging
 
-
 logger = logging.getLogger()
 
 if os.path.exists('/vagrant/Vagrantfile'):
-    logger.info('local development environment identified.')
+    logger.info('(dev-only) dev environment identified.')
     from .debugging import use_ipdb, ipython_shell
     use_ipdb()
     logger.info('(dev-only) ipdb set as default debugger.')
-    logger.info('(dev-only) Create an IPython Shell with: ipython_shell()')
+    logger.info('(dev-only) create an IPython Shell with: ipython_shell()')
 
 
 def can_generate_wordcloud(req, resp, resource, params, approved_token: str):
@@ -65,20 +64,13 @@ class CORSComponent(object):
     def process_response(self, req, resp, resource, req_succeeded):
         resp.set_header('Access-Control-Allow-Origin', self._origin)
 
-        if (
-            req_succeeded
-            and req.method == 'OPTIONS'
-            and req.get_header('Access-Control-Request-Method')
-        ):
+        if req_succeeded and req.method == 'OPTIONS' and req.get_header('Access-Control-Request-Method'):
             # NOTE(kgriffs): This is a CORS preflight request. Patch the response accordingly.
-
             allow = resp.get_header('Allow')
             resp.delete_header('Allow')
 
             allow_headers = req.get_header(
-                'Access-Control-Request-Headers',
-                default='*'
-            )
+                'Access-Control-Request-Headers', default='*')
 
             resp.set_headers((
                 ('Access-Control-Allow-Methods', allow),
@@ -113,12 +105,9 @@ class FrequenciesResource(object):
     def on_get(self, req, resp, pub):
         try:
             # Get the parameters and configure a checkpoint
-            word = req.get_param('word')
-            count = req.get_param_as_int('count')
-            chkpt = {'word': word, 'count': count} if word and count else None
-            # Fetch 10 word counts
-            wordcounts = self._storage.word_counts(pub, 10, chkpt)
-            resp.media = [w._asdict() for w in wordcounts]
+            chkpt = (req.get_param('word'), req.get_param_as_int('count'))
+
+            resp.media = [w._asdict() for w in self._storage.word_counts(pub, 10, chkpt)]  # noqa
         except Exception as ex:
             logger.exception('unable to get frequencies')
             raise falcon.HTTPServiceUnavailable(
@@ -136,11 +125,13 @@ class WordCloudResource(object):
     def on_post(self, req, resp):
         try:
             logger.info('generate word cloud images')
-            for name, _, _ in self._data_storage.publications():  # unpack the tuple
-                # Get frequencies, generate image as bytes, save to blob storage
-                freqs = self._data_storage.frequencies(name, 5000)
+            for pub in self._data_storage.publications():
+                # Get frequencies for the top 5000 words
+                freqs = self._data_storage.frequencies(pub.name, 5000)
+                # Get the bytes for the image
                 ibytes = generate_word_cloud(freqs)
-                self._blob_storage.save(name, self._bucket_name, ibytes)
+                # Save to the blob storage in the given bucket
+                self._blob_storage.save(pub.name, self._bucket_name, ibytes)
         except:
             logger.exception('error generating wordclouds')
             raise falcon.HTTPServiceUnavailable(
@@ -200,8 +191,14 @@ def create_app():
     return _create_app(data_storage, blob_storage, blob_bucket_name, allowed_origin)
 
 
+gunicorn_logger = logging.getLogger('gunicorn.error')
+logger.handlers = gunicorn_logger.handlers
+logger.setLevel(gunicorn_logger.level)
+
+
 def simple_app(environ, start_response):
     """Simplest possible application object"""
+    breakpoint()
     status = '200 OK'
     response_headers = [('Content-type', 'text/plain')]
     start_response(status, response_headers)
