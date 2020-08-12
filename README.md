@@ -17,94 +17,19 @@ The code is broken into multiple modules.
 * Python: 3.8.3
 * OS: ubuntu/bionic64
 * Daemon: Supervisord
-* Local Environment: Vagrant
+* Local Environment: Vagrant + VirtualBox
 * Production Environment: Google Cloud - Compute Engine
 * Code Editor: Visual Studio Code
 * Data Persistence: Cloud Firestore
 * Blob storage: Cloud Storage
-* ADD DATASET HERE
-
 
 
 ## Topic Selection
 The goal of this course is to demonstrate how to use Python to build more complex applications than a simple hello world app. 
 However, there's no limits on what that might cover. In the end, I searched online for what other people thought of when thinking about "advanced Python topics." Between the results I found online, and through my own experiences, I distilled the results down to a handful of topics that should help you to level up your code. :)
 
-## Shape of The Problem
-The last few projects I've worked on were across different industries. They had different requirements, used different programming languages, tools, platforms, etc. However, they shared the same basic shape. They all required some form of data ingestion process, and some form of user interface to consume the data. The application built in this course is going to be in the shape of data ingestion and consumption. 
 
-## The Application's Reason for Being
-The purpose of this application is to help us identify the most common topics mentioned by a select group of publications.
-The way we'll accomplish this is to use natural language processing to perform entity extraction. 
-...
+# Running the Web Server
+data_storage="firestore" blob_storage="cloudstorage" blob_storage_bucket="advanced_python_cloud_academy" GOOGLE_APPLICATION_CREDENTIALS="/vagrant/service_account.json"  gunicorn -b "0.0.0.0:8080" -w 1 "web.main:create_app()" --timeout=60 
 
-## A Rough Lesson Plan
-
-Exact plan may change.
-
-* Sprint Planning 00: [5min] Introduction
-
-* Sprint 01: Local Development Setup 
-    * In this lesson we'll:
-        * Start a Linux VM using Vagrant
-        * Compile and install Python 3.8
-        * Setup a virtual environment
-
-* Sprint 02: Implementing the Text Processor
-    * In this lesson we'll:
-        * Create a centralized multiprocess logger
-        * Install Spacy
-        * Create an entity extraction process for text 
-
-* Sprint 03: Implement and Test the Message Queue 
-    * In this lesson we'll:
-        * Create a multiprocess aware, drainable queue
-        * Use pytests to validate the functionality
-
-* Sprint 04: Implement Data Models and Shutdown Manager
-    * In this lesson we'll:
-        * Install Pydantic
-        * Create Models
-        * Create shutdown manager
-            * Use pytests to validate the functionality
-        * Create Persistence Function Stubs
-
-* Sprint 05: Create Backend Process Manager, Configure Setup.py, Complete DB Persistence
-    * In this lesson we'll:
-        * Create a Worker process to handle input
-        * Create a Saver process to handle database persistence
-        * Create a main entrypoint
-        * Create a setup.py file to install the app
-        * Perform bug fixes
-        * Complete DB Persistence
-
-* Sprint 06: Create a Web Frontend for Ingesting Posts
-    * In this lesson we'll:
-        * Install FastAPI, Uvicorn, GUnicorn
-        * Create an  HTTP endpoint to enqueue a Post(content: str, publication: str)
-        * Implement a header-based API Key
-
-* Sprint 07: Deploy App to Cloud VM
-    * In this lesson we'll:
-        * Install Supervisor
-        * Review the configuration file
-        * Run application with Supervisor
-        * Create a 16 Core Cloud VM
-        * Review the Deployment Process
-        * Deploy
-        * Verify Deployment
-
-* Sprint 08: Exercising Deployed App
-    * In this lesson we'll:
-        * Review script for downloading a dataset
-        * Review script for uploading Posts from dataset to Frontend
-        * Install Typer, HTTPX
-        * Create entrypoints for download and upload scripts
-        * Process 100_000 Posts
-        * Review processes with htop / strace
-        * Identify a bug
-
-* Sprint 09: Post Morteum 
-    * In this lesson we'll:
-        * Resolve the bug 
-        * Summarize what we've covered
+curl -XPOST http://127.0.0.1:8080/images -H "Authorization:8h45ty" 

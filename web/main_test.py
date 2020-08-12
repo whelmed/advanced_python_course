@@ -1,13 +1,42 @@
-from falcon import testing
+from unittest.mock import patch
+import os
 import pytest
-
+from falcon import testing
+from collections import OrderedDict
+from .data import NoOpBlobStorage, NoOpDataStorage, DataStorage, BlobStorage
 from .main import create_app
-from .data import NoOpBlobStorage, NoOpDataStorage
 
 
 @pytest.fixture()
 def client():
     return testing.TestClient(create_app())
+
+
+# Environment variables to use for NoOP settings
+noop_environvars = OrderedDict({
+    # Key: (EnvVar Value, Expected Type)
+    'data_storage': ('', NoOpDataStorage),
+    'blob_storage': ('', NoOpBlobStorage),
+    'blob_storage_bucket': ('', str),
+    'allowed_origin': ('', str)
+})
+
+
+def _create_app(*args, **kwargs):
+    '''A version of the private _create_app from main.py used in testing.'''
+    keys = list(noop_environvars.keys())  # Get the keys in the order defined
+    for idx, arg in enumerate(args):
+        envvar = keys[idx]
+        value, expected = noop_environvars[envvar]
+        assert os.getenv(envvar) == value
+        assert isinstance(arg, expected)
+
+
+@patch(f'{__package__}.main._create_app', _create_app)
+def test_create_app_noop_return_types(monkeypatch):
+    for key, (value, _) in noop_environvars.items():
+        monkeypatch.setenv(key, value)
+    create_app()
 
 
 def test_get_publications(client):

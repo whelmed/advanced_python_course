@@ -24,21 +24,25 @@
 
 '''
 from .data import (BlobStorage, DataStorage, NoOpBlobStorage, NoOpDataStorage,
-                   generate_word_cloud, get_client, pub_to_url)
+                   generate_word_cloud, get_client)
 import falcon
 from typing import Any, Dict, Generator, List, Tuple
 from collections import Counter, defaultdict
 import os
 import logging
 
+# From https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
 logger = logging.getLogger()
+gunicorn_logger = logging.getLogger('gunicorn.error')
+logger.handlers = gunicorn_logger.handlers
+logger.setLevel(gunicorn_logger.level)
+
 
 if os.path.exists('/vagrant/Vagrantfile'):
     logger.info('(dev-only) dev environment identified.')
-    from .debugging import use_ipdb, ipython_shell
+    from .debugging import use_ipdb
     use_ipdb()
     logger.info('(dev-only) ipdb set as default debugger.')
-    logger.info('(dev-only) create an IPython Shell with: ipython_shell()')
 
 
 def can_generate_wordcloud(req, resp, resource, params, approved_token: str):
@@ -87,10 +91,8 @@ class PublicationsResource(object):
 
     def on_get(self, req, resp):
         try:
-            logger.info('getting publications')
-            publications = self._storage.publications(f'/{self._bucket_name}/')
+            publications = self._storage.publications(self._bucket_name)
             resp.media = [p._asdict() for p in publications]
-            logger.info('got publications')
         except Exception as ex:
             logger.exception('unable to get publications')
             raise falcon.HTTPServiceUnavailable(
@@ -106,7 +108,6 @@ class FrequenciesResource(object):
         try:
             # Get the parameters and configure a checkpoint
             chkpt = (req.get_param('word'), req.get_param_as_int('count'))
-
             resp.media = [w._asdict() for w in self._storage.word_counts(pub, 10, chkpt)]  # noqa
         except Exception as ex:
             logger.exception('unable to get frequencies')
@@ -123,6 +124,14 @@ class WordCloudResource(object):
 
     @falcon.before(can_generate_wordcloud, '8h45ty')
     def on_post(self, req, resp):
+        '''An easy, albeit inefficient way to generate all of the images. 
+        Effective enough for the intended use case.
+
+        NOTE: from(@sowhelmed): Problems with this code: 
+            1.) Gunicorn timeout will kill long running calls.
+            2.) Single CPU used for CPU bound image generation.
+            3.) Repeated calls likely result in a denial of service
+        '''
         try:
             logger.info('generate word cloud images')
             for pub in self._data_storage.publications():
@@ -177,23 +186,7 @@ def create_app():
     blob_bucket_name = os.environ.get('blob_storage_bucket', 'fake')
     allowed_origin = os.environ.get('allowed_origin', '*')
 
-    # From https://trstringer.com/logging-flask-gunicorn-the-manageable-way/
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    logger.handlers = gunicorn_logger.handlers
-    logger.setLevel(gunicorn_logger.level)
-
-    logger.info('application settings...')
-    logger.info(f'data_storage: {data_storage.name}')
-    logger.info(f'blob_storage: {blob_storage.name}')
-    logger.info(f'blob_bucket_name: {blob_bucket_name}')
-    logger.info(f'allowed_origin: {allowed_origin}')
-
     return _create_app(data_storage, blob_storage, blob_bucket_name, allowed_origin)
-
-
-gunicorn_logger = logging.getLogger('gunicorn.error')
-logger.handlers = gunicorn_logger.handlers
-logger.setLevel(gunicorn_logger.level)
 
 
 def simple_app(environ, start_response):

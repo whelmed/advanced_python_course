@@ -1,5 +1,6 @@
 import hashlib
 import io
+from urllib.parse import urljoin
 from typing import Any, Dict, Generator, Tuple
 
 from google.cloud import firestore, storage
@@ -48,21 +49,21 @@ def generate_word_cloud(freqs, fmt: str = 'bytes', height: int = 500, width: int
         raise ValueError('unsupported fmt value.')
 
 
-def pub_to_url(publ: str):
-    '''convert the name of a publication to a URL friendly hash'''
-    return hashlib.md5(publ.encode()).hexdigest()
+def image_url_path(pub_id: str, path: str = '/'):
+    '''create a URL path based on the provided publication id, and base path'''
+    path = path or '/'  # None fix
+    return urljoin(path, f'{hashlib.md5(pub_id.encode()).hexdigest()}.png')
 
 
 class DataStorage():
-    name = 'data-firestore'
 
     def __init__(self, client: firestore.Client = None):
         self.db = client
 
-    def publications(self, bucket_name: str = '/') -> Generator[Publication, None, None]:
+    def publications(self, bucket_name: str = None) -> Generator[Publication, None, None]:
         '''Yields a `Publication` for each publication in the dataset.'''
         for doc in self.db.collection('publications').stream():
-            yield Publication(doc.id, doc.get('count'), f'{bucket_name}{pub_to_url(doc.id)}.png')
+            yield Publication(doc.id, doc.get('count'), image_url_path(doc.id, bucket_name))
 
     def word_counts(self, publ: str, top_n: int = 10, checkpoint: Tuple[str, int] = None) -> Generator[WordCount, None, None]:
         '''Yields up to top_n WordCounts for the given publication.
@@ -78,7 +79,6 @@ class DataStorage():
         # Since count is expected to be an int, checking truthiness will fail for 0.
         # Not sure that's likely, but, it could happen...right?
         if word and count is not None:
-            # If all the values in the tuple are truthy setup a checkpoint dictionary
             checkpoint = {'word': word, 'count': count}
         else:
             checkpoint = {}
@@ -100,15 +100,14 @@ class DataStorage():
 
 
 class NoOpDataStorage():
-    name = 'data-noop'
 
     def __init__(self, *args, **kwargs):
         pass
 
-    def publications(self, bucket_name='/', *_, **__) -> Generator[Publication, None, None]:
+    def publications(self, bucket_name: str = None, *_, **__) -> Generator[Publication, None, None]:
         for i in range(10):
             pub = f'pub{i}'
-            yield Publication(pub, i, f'{bucket_name}{pub_to_url(pub)}.png')
+            yield Publication(pub, i, image_url_path(pub, bucket_name))
 
     def word_counts(self, *_, checkpoint: Tuple[str, int] = None, **__) -> Generator[WordCount, None, None]:
         # If a checkpoint is passed, use the count to determine
@@ -128,7 +127,6 @@ class NoOpDataStorage():
 
 
 class BlobStorage():
-    name = 'blob-gc-storage'
 
     def __init__(self, client: storage.Client):
         self.blob = client
@@ -140,7 +138,6 @@ class BlobStorage():
 
 
 class NoOpBlobStorage():
-    name = 'blob-noop'
 
     def __init__(self, *args, **kwargs):
         pass

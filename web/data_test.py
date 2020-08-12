@@ -7,7 +7,7 @@ from google.cloud.storage import Blob
 from google.cloud import storage
 from wordcloud.wordcloud import WordCloud
 from .data import (get_client, image_to_byte_array, DataStorage,
-                   NoOpDataStorage, generate_word_cloud, pub_to_url)
+                   NoOpDataStorage, generate_word_cloud, image_url_path)
 
 black_square = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x80\x00\x00\x00\x80\x08\x02\x00\x00\x00L\\\xf6\x9c\x00\x00\x00DIDATx\x9c\xed\xc1\x01\x01\x00\x00\x00\x80\x90\xfe\xaf\xee\x08\n\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18\xc0\x80\x00\x01c\x16u\x00\x00\x00\x00\x00IEND\xaeB`\x82'
 
@@ -68,10 +68,12 @@ def data_storage(request):
 
 
 @pytest.mark.skipif(os.path.exists('/vagrant/Vagrantfile'), reason='run in prod-like environments only')
-@pytest.mark.parametrize('_in,_out', [
-    (None, firestore.Client),
-    ('db', firestore.Client),
-    ('blob', storage.Client)])
+@pytest.mark.parametrize(
+    '_in,_out', [
+        (None, firestore.Client),
+        ('db', firestore.Client),
+        ('blob', storage.Client)
+    ])
 def test_get_client_return_type(_in, _out):
     c = get_client(_in) if _in else get_client()
     assert type(c) == _out
@@ -86,14 +88,14 @@ def test_publications(data_storage):
     for index, publication in enumerate(data_storage.publications()):
         assert publication.count == index
         assert publication.name == f'pub{index}'
-        assert publication.img_uri == f'/{pub_to_url(publication.name)}.png'
+        assert publication.img_uri == image_url_path(publication.name)
 
 
 def test_publications_diff_img_dir(data_storage):
-    for index, publication in enumerate(data_storage.publications('/reimagined/')):
+    for index, publication in enumerate(data_storage.publications('reimagined')):
         assert publication.count == index
         assert publication.name == f'pub{index}'
-        assert publication.img_uri == f'/reimagined/{pub_to_url(publication.name)}.png'
+        assert publication.img_uri == image_url_path(publication.name, path='reimagined')  # noqa
 
 
 def test_word_counts(data_storage):
