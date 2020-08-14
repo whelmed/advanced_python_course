@@ -104,26 +104,22 @@ class NoOpDataStorage():
     def __init__(self, *args, **kwargs):
         pass
 
-    def publications(self, bucket_name: str = None, *_, **__) -> Generator[Publication, None, None]:
+    def publications(self, bucket_name: str = None) -> Generator[Publication, None, None]:
         for i in range(10):
             pub = f'pub{i}'
             yield Publication(pub, i, image_url_path(pub, bucket_name))
 
-    def word_counts(self, *_, checkpoint: Tuple[str, int] = None, **__) -> Generator[WordCount, None, None]:
-        # If a checkpoint is passed, use the count to determine
-        # where the range generator starts
-        # Allows us to simulate setting a checkpoint
-        checkpoint = checkpoint or (None, -1)
-        # Offset by one. If a value wasn't passed in, this will end up as 0
-        # If a value was passed in, then it's a checkpoint, and we need to increment by 1
-        # in order to get the value after the checkpoint
-        checkpoint = checkpoint[1] + 1
-        # Hardcoding 10 records. Could make class level setting if needed
+    def word_counts(self, publ: str, top_n: int = 10, checkpoint: Tuple[str, int] = None) -> Generator[WordCount, None, None]:
+        if checkpoint is None or checkpoint == (None, None):
+            checkpoint = 0
+        else:
+            checkpoint = checkpoint[1] + 1
+
         for i in range(checkpoint, 10):
             yield WordCount(f'ent{i}', i)
 
-    def frequencies(self, *_, **__) -> Dict[str, int]:
-        return {wc.word: wc.count for wc in self.word_counts()}
+    def frequencies(self, publ: str, top_n: int = 10, checkpoint: Tuple[str, int] = None) -> Dict[str, int]:
+        return {wc.word: wc.count for wc in self.word_counts(publ, top_n, checkpoint)}
 
 
 class BlobStorage():

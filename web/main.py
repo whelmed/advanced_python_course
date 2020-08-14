@@ -23,8 +23,7 @@
                             if not set the value is set to: *
 
 '''
-from .data import (BlobStorage, DataStorage, NoOpBlobStorage, NoOpDataStorage,
-                   generate_word_cloud, get_client)
+from .data import BlobStorage, DataStorage, NoOpBlobStorage, NoOpDataStorage, generate_word_cloud, get_client
 import falcon
 from typing import Any, Dict, Generator, List, Tuple
 from collections import Counter, defaultdict
@@ -40,8 +39,7 @@ logger.setLevel(gunicorn_logger.level)
 
 if os.path.exists('/vagrant/Vagrantfile'):
     logger.info('(dev-only) dev environment identified.')
-    from .debugging import use_ipdb
-    use_ipdb()
+    os.environ['PYTHONBREAKPOINT'] = 'ipdb.set_trace'
     logger.info('(dev-only) ipdb set as default debugger.')
 
 
