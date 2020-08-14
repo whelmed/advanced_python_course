@@ -49,9 +49,18 @@ def generate_word_cloud(freqs, fmt: str = 'bytes', height: int = 500, width: int
         raise ValueError('unsupported fmt value.')
 
 
-def image_url_path(pub_id: str, path: str = '/'):
+def image_url_path(pub_id: str, path: str = '/') -> str:
     '''create a URL path based on the provided publication id, and base path'''
-    path = path or '/'  # None fix
+    # If None or empty set to the default of forward slash
+    path = path or '/'
+
+    if path != '/':
+        # Ensure that the path starts and ends with a forward slash
+        # Break the path apart to remove all the forward slashes
+        path = path.split('/')
+        # Reassemble ensuring to remove multiple slashes. for example: /path// becomes /path/
+        path = '/{}/'.format('/'.join([p for p in path if p]))
+
     return urljoin(path, f'{hashlib.md5(pub_id.encode()).hexdigest()}.png')
 
 

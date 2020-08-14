@@ -126,3 +126,19 @@ def test_generate_word_cloud_invalid_fmt():
     freqs = {wc['word']: wc['count'] for wc in Client.collections['ent']}
     with pytest.raises(ValueError):
         generate_word_cloud(freqs, fmt='unexpected')
+
+
+@pytest.mark.parametrize(
+    '_in,_out', [
+        (None, '/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('', '/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('/fake', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('/fake/', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('/fake//', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('//fake/', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('//fake//', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('/fake/path/', '/fake/path/f049522a75b637e2ce4445cd443e96e9.png'),
+    ])
+def test_image_url_path(_in, _out):
+    assert image_url_path('pub0') == '/f049522a75b637e2ce4445cd443e96e9.png'
+    assert image_url_path('pub0', _in) == _out
