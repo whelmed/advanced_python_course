@@ -67,7 +67,6 @@ def data_storage(request):
     return request.param(client=Client())
 
 
-@pytest.mark.skipif(os.path.exists('/vagrant/Vagrantfile'), reason='run in prod-like environments only')
 @pytest.mark.parametrize(
     '_in,_out', [
         (None, firestore.Client),
@@ -132,6 +131,7 @@ def test_generate_word_cloud_invalid_fmt():
     '_in,_out', [
         (None, '/f049522a75b637e2ce4445cd443e96e9.png'),
         ('', '/f049522a75b637e2ce4445cd443e96e9.png'),
+        ('fake', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
         ('/fake', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
         ('/fake/', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),
         ('/fake//', '/fake/f049522a75b637e2ce4445cd443e96e9.png'),

@@ -44,7 +44,7 @@ def test_get_publications(client):
     assert result.status_code == 200
     assert result.headers.get('Access-Control-Allow-Origin') == '*'
     assert isinstance(result.json, list)
-    assert len(result.json)
+    assert len(result.json) == 10
     for prop in ['name', 'count', 'img_uri']:
         assert prop in result.json[0]
 
@@ -54,7 +54,17 @@ def test_get_frequencies(client):
     assert result.status_code == 200
     assert result.headers.get('Access-Control-Allow-Origin') == '*'
     assert isinstance(result.json, list)
-    assert len(result.json)
+    assert len(result.json) == 10
+    for prop in ['word', 'count']:
+        assert prop in result.json[0]
+
+
+def test_get_frequencies_with_params(client):
+    result = client.simulate_get('/frequencies/pub0?word=ent1&count=1')
+    assert result.status_code == 200
+    assert result.headers.get('Access-Control-Allow-Origin') == '*'
+    assert isinstance(result.json, list)
+    assert len(result.json) == 8
     for prop in ['word', 'count']:
         assert prop in result.json[0]
 
@@ -66,7 +76,6 @@ def test_post_images_unauthorized(client):
 
 
 def test_post_images(client):
-    result = client.simulate_post(
-        f'/images', headers={'Authorization': '8h45ty'})
+    result = client.simulate_post(f'/images', headers={'Authorization': '8h45ty'})  # noqa
     assert result.headers.get('Access-Control-Allow-Origin') == '*'
     assert result.status_code == 201

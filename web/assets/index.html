@@ -34,8 +34,6 @@
                     return {
                         publication: '',
                         wordcounts: [],
-                        currentIndex: 0,
-                        page: [],
                     }
                 },
                 methods: {
@@ -51,13 +49,24 @@
                     },
                     getNext: function () {
                         let last = this.wordcounts[this.wordcounts.length - 1];
+                        if (typeof last === 'undefined') {
+                            this.open(this.publication);
+                            return;
+                        }
+
                         fetch(`${apiBaseURL}/frequencies/${this.publication}?word=${last.word}&count=${last.count}`)
                             .then(resp => resp.json())
                             .then(json => this.wordcounts = this.wordcounts.concat(json))
                             .catch(err => console.log(err));
                     },
                     getPrevious: function () {
-                        this.currentIndex--;
+                        // assign to a temp variable
+                        var wc = this.wordcounts;
+                        // remove the last ten records. What if the previous call didn't return 10...?
+                        wc.reverse();
+                        wc = wc.slice(10);
+                        wc.reverse();
+                        this.wordcounts = wc;
                     }
                 }
             });
