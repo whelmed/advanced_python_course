@@ -18,7 +18,7 @@ setup(
         "fastapi==0.58.0",
         "google-cloud-firestore==1.7.0",
         "pydantic==1.5.1",
-        "uvicorn==0.11.5",
+        "uvicorn==0.11.7",
         "gunicorn==20.0.4",
         "passlib==1.7.2",
         "bcrypt==3.1.7",
