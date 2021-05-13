@@ -17,7 +17,7 @@ setup(
     install_requires=[
         "fastapi==0.58.0",
         "google-cloud-firestore==1.7.0",
-        "pydantic==1.5.1",
+        "pydantic==1.6.2",
         "uvicorn==0.11.7",
         "gunicorn==20.0.4",
         "passlib==1.7.2",
