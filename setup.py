@@ -15,7 +15,7 @@ setup(
         "uploaddataset=simulator.upload:main",
     ]},
     install_requires=[
-        "fastapi==0.58.0",
+        "fastapi==0.65.2",
         "google-cloud-firestore==1.7.0",
         "pydantic==1.5.1",
         "uvicorn==0.11.7",
