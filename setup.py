@@ -22,7 +22,7 @@ setup(
         "gunicorn==20.0.4",
         "passlib==1.7.2",
         "bcrypt==3.1.7",
-        "PyJWT==1.7.1",
+        "PyJWT==2.4.0",
         "spacy==2.3.2",
         "spacy-lookups-data==0.3.2",
         "typer==0.3.0",
