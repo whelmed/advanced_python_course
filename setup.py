@@ -26,7 +26,7 @@ setup(
         "spacy==2.3.2",
         "spacy-lookups-data==0.3.2",
         "typer==0.3.0",
-        "httpx==0.13.3",
+        "httpx==0.23.0",
         "supervisor==4.2.0",
     ],
     extras_require={
