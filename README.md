@@ -1,3 +1,5 @@
+# My playground to test VS Code Extensions and the latest AI assistants like GitHub CoPilot
+
 # Learning Python through the creation of a data ingestion process.
 
 
