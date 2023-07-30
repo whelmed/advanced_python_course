@@ -5,6 +5,14 @@ terraform {
       version = "=2.97.0"
     }
   }
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "dataknittery"
+
+    workspaces {
+      name = "advanced_python_course"
+    }
+  }
 }
 
 provider "azurerm" {
@@ -99,7 +107,7 @@ resource "azurerm_linux_virtual_machine" "dknit-vm" {
   name                = "dknit-vm"
   resource_group_name = azurerm_resource_group.dknit-rg.name
   location            = azurerm_resource_group.dknit-rg.location
-  size                = "Standard_B1s"
+  size                = "Standard_B2s"
   admin_username      = "dknit"
   network_interface_ids = [
     azurerm_network_interface.dknit-nic.id,
